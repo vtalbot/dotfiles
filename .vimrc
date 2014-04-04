@@ -1,99 +1,192 @@
-" Use the Molokai theme (originally created for TextMate by Wimer Hazenberg)
-colorscheme molokai
+execute pathogen#infect()
 
-" Make Vim more useful
-set nocompatible
-" Use the OS clipboard by default (on versions compiled with `+clipboard`)
-set clipboard=unnamed
-" Enhance command-line completion
-set wildmenu
-" Allow cursor keys in insert mode
-set esckeys
-" Allow backspace in insert mode
-set backspace=indent,eol,start
-" Optimize for fast terminal connections
-set ttyfast
-" Add the g flag to search/replace by default
-set gdefault
-" Use UTF-8 without BOM
-set encoding=utf-8 nobomb
-" Change mapleader
-let mapleader=","
-" Don’t add empty newlines at the end of files
-set binary
-set noeol
-" Centralize backups, swapfiles and undo history
-set backupdir=~/.vim/backups
-set directory=~/.vim/swaps
-if exists("&undodir")
-	set undodir=~/.vim/undo
-endif
+set nocompatible   " Disable vi-compatibility
+set t_Co=256
 
-" Respect modeline in files
-set modeline
-set modelines=4
-" Enable per-directory .vimrc files and disable unsafe commands in them
-set exrc
-set secure
-" Enable line numbers
-set number
-" Enable syntax highlighting
-syntax on
-" Highlight current line
-set cursorline
-" Make tabs as wide as two spaces
-set tabstop=2
-" Show “invisible” characters
-set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
-set list
-" Highlight searches
-set hlsearch
-" Ignore case of searches
-set ignorecase
-" Highlight dynamically as pattern is typed
-set incsearch
-" Always show status line
-set laststatus=2
-" Enable mouse in all modes
+colorscheme xoria256
+set guifont=Menlo\ for\ Powerline:h16
+set guioptions-=T " Removes top toolbar
+set guioptions-=r " Removes right hand scroll bar
+set go-=L " Removes left hand scroll bar
+set linespace=15
+
+set showmode                    " always show what mode we're currently editing in
+set nowrap                      " don't wrap lines
+set tabstop=4                   " a tab is four spaces
+set smarttab
+set tags=tags
+set softtabstop=4               " when hitting <BS>, pretend like a tab is removed, even if spaces
+set expandtab                   " expand tabs by default (overloadable per file type later)
+set shiftwidth=4                " number of spaces to use for autoindenting
+set shiftround                  " use multiple of shiftwidth when indenting with '<' and '>'
+set backspace=indent,eol,start  " allow backspacing over everything in insert mode
+set autoindent                  " always set autoindenting on
+set copyindent                  " copy the previous indentation on autoindenting
+set number                      " always show line numbers
+set ignorecase                  " ignore case when searching
+set smartcase                   " ignore case if search pattern is all lowercase,
+set timeout timeoutlen=200 ttimeoutlen=100
+set visualbell           " don't beep
+set noerrorbells         " don't beep
+set autowrite  "Save on buffer switch
 set mouse=a
-" Disable error bells
-set noerrorbells
-" Don’t reset cursor to start of line when moving around.
-set nostartofline
-" Show the cursor position
-set ruler
-" Don’t show the intro message when starting Vim
-set shortmess=atI
-" Show the current mode
-set showmode
-" Show the filename in the window titlebar
-set title
-" Show the (partial) command as it’s being typed
+
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+let g:mapleader = ","
+
+" Fast saves
+nmap <leader>w :w!<cr>
+
+" Down is really the next line
+nnoremap j gj
+nnoremap k gk
+
+"Easy escaping to normal model
+imap jj <esc>
+
+"Auto change directory to match current file ,cd
+nnoremap ,cd :cd %:p:h<CR>:pwd<CR>
+
+"easier window navigation
+
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+"Resize vsplit
+nmap <C-v> :vertical resize +5<cr>
+nmap 25 :vertical resize 40<cr>
+nmap 50 <c-w>=
+nmap 75 :vertical resize 120<cr>
+
+nmap <C-b> :NERDTreeToggle<cr>
+
+"Load the current buffer in Chrome
+nmap ,c :!open -a Google\ Chrome<cr>
+
+"Show (partial) command in the status line
 set showcmd
-" Use relative line numbers
-if exists("&relativenumber")
-	set relativenumber
-	au BufReadPost * set relativenumber
-endif
-" Start scrolling three lines before the horizontal window border
-set scrolloff=3
 
-" Strip trailing whitespace (,ss)
-function! StripWhitespace()
-	let save_cursor = getpos(".")
-	let old_query = getreg('/')
-	:%s/\s\+$//e
-	call setpos('.', save_cursor)
-	call setreg('/', old_query)
+" Create split below
+nmap :sp :rightbelow sp<cr>
+
+" Quickly go forward or backward to buffer
+nmap :bp :BufSurfBack<cr>
+nmap :bn :BufSurfForward<cr>
+
+highlight Search cterm=underline
+
+" Swap files out of the project root
+set backupdir=~/.vim/backups//
+set directory=~/.vim/swaps//
+
+" Run PHPUnit tests
+map <Leader>t :!phpunit %<cr>
+
+" Easy motion stuff
+let g:EasyMotion_leader_key = '<Leader>'
+
+" Powerline (Fancy thingy at bottom stuff)
+let g:Powerline_symbols = 'fancy'
+set laststatus=2   " Always show the statusline
+set encoding=utf-8 " Necessary to show Unicode glyphs
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+
+autocmd cursorhold * set nohlsearch
+autocmd cursormoved * set hlsearch
+
+" Remove search results
+command! H let @/=""
+
+" If you prefer the Omni-Completion tip window to close when a selection is
+" made, these lines close it on movement in insert mode or when leaving
+" insert mode
+autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+" Abbreviations
+abbrev pft PHPUnit_Framework_TestCase
+
+abbrev gm !php artisan generate:model
+abbrev gc !php artisan generate:controller
+abbrev gmig !php artisan generate:migration
+
+" Auto-remove trailing spaces
+autocmd BufWritePre *.php :%s/\s\+$//e
+
+" Edit todo list for project
+nmap ,todo :e todo.txt<cr>
+
+" Laravel framework commons
+nmap <leader>lr :e app/routes.php<cr>
+nmap <leader>lca :e app/config/app.php<cr>81Gf(%O
+nmap <leader>lcd :e app/config/database.php<cr>
+nmap <leader>lc :e composer.json<cr>
+
+" Concept - load underlying class for Laravel
+function! FacadeLookup()
+    let facade = input('Facade Name: ')
+    let classes = {
+\       'Form': 'Html/FormBuilder.php',
+\       'Html': 'Html/HtmlBuilder.php',
+\       'File': 'Filesystem/Filesystem.php',
+\       'Eloquent': 'Database/Eloquent/Model.php'
+\   }
+
+    execute ":edit vendor/laravel/framework/src/Illuminate/" . classes[facade]
 endfunction
-noremap <leader>ss :call StripWhitespace()<CR>
-" Save a file as root (,W)
-noremap <leader>W :w !sudo tee % > /dev/null<CR>
+nmap ,lf :call FacadeLookup()<cr>
 
-" Automatic commands
-if has("autocmd")
-	" Enable file type detection
-	filetype on
-	" Treat .json files as .js
-	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
-endif
+" CtrlP Stuff
+
+" Familiar commands for file/symbol browsing
+map <D-p> :CtrlP<cr>
+map <C-r> :CtrlPBufTag<cr>
+
+" I don't want to pull up these folders/files when calling CtrlP
+set wildignore+=*/vendor/**
+set wildignore+=*/public/forum/**
+
+" Open splits
+nmap vs :vsplit<cr>
+nmap sp :split<cr>
+
+" Create/edit file in the current directory
+nmap :ed :edit %:p:h/
+
+" Prepare a new PHP class
+function! Class()
+    let name = input('Class name? ')
+    let namespace = input('Any Namespace? ')
+
+    if strlen(namespace)
+        exec 'normal i<?php namespace ' . namespace . ';
+    else
+        exec 'normal i<?php
+    endif
+
+    " Open class
+    exec 'normal iclass ' . name . ' {^M}^[O^['
+
+    exec 'normal i^M    public function __construct()^M{^M ^M}^['
+endfunction
+nmap ,1  :call Class()<cr>
+
+" Add a new dependency to a PHP class
+function! AddDependency()
+    let dependency = input('Var Name: ')
+    let namespace = input('Class Path: ')
+
+    let segments = split(namespace, '\')
+    let typehint = segments[-1]
+
+    exec 'normal gg/construct^M:H^Mf)i, ' . typehint . ' $' . dependency . '^[/}^>O$this->^[a' . dependency . ' = $' . dependency . ';^[?{^MkOprotected $' . dependency . ';^M^[?{^MOuse ' . namespace . ';^M^['
+
+    " Remove opening comma if there is only one dependency
+    exec 'normal :%s/(, /(/g
+'
+endfunction
+nmap ,2  :call AddDependency()<cr>
