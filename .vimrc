@@ -190,3 +190,5 @@ function! AddDependency()
 '
 endfunction
 nmap ,2  :call AddDependency()<cr>
+
+syntax on
