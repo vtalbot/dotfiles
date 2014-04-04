@@ -1,5 +1,5 @@
 # Add `~/bin` to the `$PATH`
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH"
 
 # Use brew installed php
 export PATH="$(brew --prefix josegonzalez/php/php55)/bin:$PATH"
