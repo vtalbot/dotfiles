@@ -44,12 +44,26 @@ export BOLD
 export RESET
 
 function parse_git_dirty() {
-	[[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"
+	[[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo ""
 }
 
 function parse_git_branch() {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
 }
 
-export PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
+function git_color {
+	local git_status="#(git status 2> /dev/null)"
+
+	if [[ ! $git_status =~ "working directory clean" ]]; then
+		echo $MAGENTA
+  else if [[ $git_status =~ "Your branch is ahead of" ]]; then
+		echo $ORANGE
+	else if [[ $git_status =~ "nothing to commit" ]]; then
+		echo $GREEN
+	else
+		echo $PURPLE
+	fi fi fi
+}
+
+export PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$(git_color)\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
 export PS2="\[$ORANGE\]→ \[$RESET\]"
