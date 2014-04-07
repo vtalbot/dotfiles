@@ -19,6 +19,12 @@
 	cm = commit -m
 	# Switch to a branch, creating it if necessary
 	go = checkout -B
+	# Switch to a branch
+	co = checkout
+	# List all branches
+	br = branch -lavv
+	# Merge branch
+	m = merge
 	# Show verbose output about tags, branches or remotes
 	tags = tag -l
 	branches = branch -a
