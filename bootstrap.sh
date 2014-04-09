@@ -26,6 +26,12 @@ function doIt() {
 		git clone https://github.com/Lokaltog/vim-powerline.git ~/.vim/bundle/vim-powerline
 	fi
 
+	if [ -d ~/.vim/bundle/vim-hack ]; then
+	    cd ~/.vim/bundle/vim-hack && git pull
+	else
+	    git clone https://github.com/hhvm/vim-hack.git ~/.vim/bundle/vim-hack
+	fi
+
 	cd "$cwd"
 
 	source ~/.bash_profile
