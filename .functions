@@ -330,9 +330,9 @@ function a2restart() {
 function penmod() {
     if [ -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini" ]; then
         echo "PHP extension $@ is already enabled."
-    elseif [ -f "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" ]; then
+    elif [ -f "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" ]; then
         echo -n "Enabling PHP extension $@: "
-        sudo ln -s "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
+        ln -s "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
         echo "OK"
         a2restart
     else
@@ -343,9 +343,9 @@ function penmod() {
 function pdismod() {
     if [ ! -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini" ]; then
         echo "PHP extension $@ is already disabled."
-    elseif [ -f "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" ]; then
+    elif [ -f "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" ]; then
         echo -n "Disabling PHP extension $@: "
-        sudo rm -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
+        rm -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
         echo "OK"
         a2restart
     else
