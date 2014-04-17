@@ -322,3 +322,30 @@ function np() {
 function tre() {
 	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
 }
+
+function a2restart() {
+    sude apachectl -k restart
+}
+
+function penmod() {
+    echo -n "Enabling PHP extension $@: "
+    sudo ln -s "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
+    echo "OK"
+    a2restart
+}
+
+function pdismod() {
+    echo -n "Disabling PHP extension $@: "
+    sudo rm -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
+    echo "OK"
+    a2restart
+}
+
+function pstmod() {
+    if [ -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini" ]; then
+        echo "PHP extension $@ is enabled."
+    else
+        echo "PHP extension $@ is disabled."
+    fi
+}
+
