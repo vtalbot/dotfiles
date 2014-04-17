@@ -324,21 +324,33 @@ function tre() {
 }
 
 function a2restart() {
-    sude apachectl -k restart
+    sudo apachectl -k restart
 }
 
 function penmod() {
-    echo -n "Enabling PHP extension $@: "
-    sudo ln -s "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
-    echo "OK"
-    a2restart
+    if [ -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini" ]; then
+        echo "PHP extension $@ is already enabled."
+    elseif [ -f "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" ]; then
+        echo -n "Enabling PHP extension $@: "
+        sudo ln -s "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
+        echo "OK"
+        a2restart
+    else
+        echo "PHP extension $@ not found."
+    fi
 }
 
 function pdismod() {
-    echo -n "Disabling PHP extension $@: "
-    sudo rm -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
-    echo "OK"
-    a2restart
+    if [ ! -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini" ]; then
+        echo "PHP extension $@ is already disabled."
+    elseif [ -f "/usr/local/etc/php/5.4/conf-available/ext-$@.ini" ]; then
+        echo -n "Disabling PHP extension $@: "
+        sudo rm -f "/usr/local/etc/php/5.4/conf.d/ext-$@.ini"
+        echo "OK"
+        a2restart
+    else
+        echo "PHP extension $@ not found."
+    fi
 }
 
 function pstmod() {
