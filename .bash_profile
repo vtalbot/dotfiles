@@ -1,5 +1,5 @@
 # Add `~/bin` to the `$PATH`
-export PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH"
+export PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:$HOME/.composer/vendor/bin:$PATH"
 
 if [ -f "/usr/local/bin/brew" ]; then
     # Use brew installed php
